@@ -38,12 +38,6 @@ export class WebpackProdConfig extends WebpackBaseConfig {
         maxAsyncRequests: 5,
         maxInitialRequests: 3,
         cacheGroups: {
-          preact: {
-            name: `preact`,
-            test: /[\\/]preact[\\/]/,
-            chunks: 'all',
-            reuseExistingChunk: true,
-          },
           vendors: {
             test: /[\\/]node_modules[\\/]/,
             priority: -10,

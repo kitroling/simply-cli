@@ -161,7 +161,7 @@ export class WebpackBaseConfig {
     return [
       new MiniCssExtractPlugin(),
       new HtmlWebpackPlugin({
-        title: 'Test index',
+        title: 'Simply',
         template: path.join(cwd, 'public/index.html'),
       }),
       this.progressBarPlugin(),
