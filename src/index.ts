@@ -1,5 +1,1 @@
-export * from './config/analyze'
-export * from './config/base'
-export * from './config/dev'
-export * from './config/prod'
-export * from './builder'
+export * from './webpack'

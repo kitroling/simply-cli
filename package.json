@@ -1,5 +1,5 @@
 {
-  "name": "@simply/webpack",
+  "name": "@simply/core",
   "module": "dist/webpack.esm.js",
   "version": "0.1.0",
   "license": "MIT",
@@ -31,7 +31,8 @@
     "printWidth": 80,
     "semi": false,
     "singleQuote": true,
-    "trailingComma": "es5"
+    "trailingComma": "es5",
+    "endOfLine": "lf"
   },
   "size-limit": [
     {
@@ -51,7 +52,6 @@
     "@types/postcss-preset-env": "^6.7.3",
     "@types/progress-bar-webpack-plugin": "^2.1.0",
     "@types/webpack-bundle-analyzer": "^4.4.1",
-    "hable": "^3.0.0",
     "husky": "^7.0.4",
     "size-limit": "^7.0.5",
     "tsdx": "^0.14.1",
