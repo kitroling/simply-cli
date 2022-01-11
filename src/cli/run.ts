@@ -39,7 +39,7 @@ const getRunOptions = (argv: string[]) => {
       if (defs.params[key].array) {
         const val = options[key]
         if (!Array.isArray(val)) {
-          options[key] = val ? [val] : []
+          options[key] = val ? [val] : undefined
         }
       }
     }
