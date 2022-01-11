@@ -1,9 +1,10 @@
 import minimist from 'minimist'
-import { WebpackBuilder, WebpackRunMode } from '../builder'
 import Commands from './commands'
+import { CMDDefinition } from './types'
+import { App } from '../core'
+import { WebpackRunMode } from '../option'
 
-export const run = async () => {
-  const argv = process.argv.slice(2)
+const getRunOptions = (argv: string[]) => {
   const {
     _: [mode = 'dev'],
   } = minimist(argv, { stopEarly: true })
@@ -42,10 +43,24 @@ export const run = async () => {
         }
       }
     }
-
-    const builder = new WebpackBuilder()
-    await builder.run(mode as WebpackRunMode, options)
+    return {
+      command: defs,
+      mode,
+      ...options,
+    } as {
+      command: CMDDefinition
+      mode: WebpackRunMode
+      [key: string]: any
+    }
   } else {
     throw new Error('Unknown command')
   }
+}
+
+export const run = async () => {
+  const argv = process.argv.slice(2)
+  const { command, ...runOptions } = getRunOptions(argv)
+  const options = command.prepare?.(runOptions) || {}
+  const app = new App(options)
+  await app.start()
 }

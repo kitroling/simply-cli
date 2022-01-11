@@ -2,59 +2,68 @@ import webpack from 'webpack'
 import { WebpackDevConfig } from './config/dev'
 import { WebpackProdConfig } from './config/prod'
 import { WebpackAnalyzeConfig } from './config/analyze'
-import DevServer, { Configuration } from 'webpack-dev-server'
-import path from 'path'
-import { WebpackRunMode, ConfigType, BuilderDevOptions } from './types'
+import DevServer from 'webpack-dev-server'
+import { ConfigType } from './types'
 import chalk from 'chalk'
 import { AddressInfo } from 'net'
 import * as url from 'url'
-
-const cwd = process.cwd()
+import { CoreOption, WebpackRunMode } from '../option'
 
 // todo debug mode
 export class WebpackBuilder {
+  constructor(private readonly options: CoreOption) {}
+
   private devServer!: DevServer
 
-  async run(mode: WebpackRunMode = 'dev', options?: any) {
-    const config = this.getConfig(mode)
+  get mode() {
+    return this.options.mode
+  }
+
+  get isDev() {
+    return this.mode === 'dev'
+  }
+
+  async run() {
+    const config = this.getConfig()
     const compiler = webpack(config)
-    const startCompile =
-      mode === 'dev'
-        ? this.runDevCompiler(compiler, options)
-        : this.runCompiler(compiler)
+    const startCompile = this.isDev
+      ? this.runDevCompiler(compiler)
+      : this.runCompiler(compiler)
     const waitCompiled = new Promise<any>(resolve => {
       compiler.hooks.done.tap('load-resources', resolve)
     })
-    await Promise.all([waitCompiled, startCompile])
-    if (mode === 'dev') {
+    await Promise.all([startCompile, waitCompiled])
+    this.isDev && this.printFriendlyDevModeMessage()
+  }
+
+  printFriendlyDevModeMessage() {
+    console.log(
+      chalk.gray('Compiled successfully.\nWaiting for file changes...')
+    )
+    const addressInfo = this.devServer.server?.address?.() as AddressInfo
+    if (addressInfo) {
       console.log(
-        chalk.gray('Compiled successfully.\nWaiting for file changes...')
-      )
-      const addressInfo = this.devServer.server?.address?.() as AddressInfo
-      if (addressInfo) {
-        console.log(
-          chalk.bold.black('Listening on:'),
-          chalk.blue(
-            url.format({
-              protocol: 'http',
-              port: addressInfo.port,
-              hostname: addressInfo.address,
-            })
-          )
+        chalk.bold.black('Listening on:'),
+        chalk.blue(
+          url.format({
+            protocol: 'http',
+            port: addressInfo.port,
+            hostname: addressInfo.address,
+          })
         )
-      } else {
-        throw new Error('No address')
-      }
+      )
+    } else {
+      throw new Error('No address')
     }
   }
 
-  getConfig(mode: WebpackRunMode) {
+  getConfig() {
     const configs: Record<WebpackRunMode, ConfigType> = {
       dev: WebpackDevConfig,
       prod: WebpackProdConfig,
       analyze: WebpackAnalyzeConfig,
     }
-    const config = new configs[mode]()
+    const config = new configs[this.mode](this.options)
     return config.config()
   }
 
@@ -67,33 +76,10 @@ export class WebpackBuilder {
     })
   }
 
-  devConfig(devOptions: BuilderDevOptions): Configuration {
-    return {
-      port: devOptions.port,
-      host: devOptions.host,
-      hot: true,
-      open: devOptions.open,
-      compress: true,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Access-Control-Allow-Headers': '*',
-      },
-      client: {
-        logging: 'warn',
-        progress: false,
-        overlay: true,
-      },
-      static: devOptions.static.map(dir => ({
-        directory: path.join(cwd, dir),
-      })),
-    }
-  }
-
-  private async runDevCompiler(compiler: webpack.Compiler, options: any) {
-    const devServer = new DevServer(this.devConfig(options), compiler)
-    await devServer.start()
+  private async runDevCompiler(compiler: webpack.Compiler) {
+    const devServer = new DevServer(this.options.devServer, compiler)
     this.devServer = devServer
+    await devServer.start()
     return compiler
   }
 }

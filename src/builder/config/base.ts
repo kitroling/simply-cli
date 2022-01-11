@@ -6,21 +6,23 @@ import { RuleSetRule, Configuration } from 'webpack'
 import ProgressBarPlugin from 'progress-bar-webpack-plugin'
 import chalk from 'chalk'
 import { WebpackMode } from '../types'
+import { CoreOption, WebpackRunMode } from '../../option'
+import camelcase from 'camelcase'
 
-const cwd = process.cwd()
-
+// todo apply webpack config from CoreConfig
 export class WebpackBaseConfig {
-  get modeShortened() {
-    const shortened: Record<WebpackMode, string> = {
-      development: 'Dev',
-      production: 'Prod',
-      none: 'None',
+  constructor(private readonly options: CoreOption) {}
+
+  get modeMapping(): Record<WebpackRunMode, WebpackMode> {
+    return {
+      dev: 'development',
+      prod: 'production',
+      analyze: 'production',
     }
-    return shortened[this.mode]
   }
 
   get mode(): WebpackMode {
-    return 'none'
+    return this.modeMapping[this.options.mode]
   }
 
   entry() {
@@ -30,18 +32,19 @@ export class WebpackBaseConfig {
   output() {
     return {
       filename: '[name].bundle.js',
-      path: path.resolve(cwd, 'dist'),
+      path: path.resolve(this.options.rootDir, 'dist'),
       publicPath: '/',
     }
   }
 
   alias() {
     return {
-      '@': path.join(cwd, 'src'),
-      react: 'preact/compat',
-      'react-dom/test-utils': 'preact/test-utils',
-      'react-dom': 'preact/compat',
-      'react/jsx-runtime': 'preact/jsx-runtime',
+      '@': path.join(this.options.rootDir, 'src'),
+      // xxx preact support
+      // react: 'preact/compat',
+      // 'react-dom/test-utils': 'preact/test-utils',
+      // 'react-dom': 'preact/compat',
+      // 'react/jsx-runtime': 'preact/jsx-runtime',
     }
   }
 
@@ -162,7 +165,7 @@ export class WebpackBaseConfig {
       new MiniCssExtractPlugin(),
       new HtmlWebpackPlugin({
         title: 'Simply',
-        template: path.join(cwd, 'public/index.html'),
+        template: path.join(this.options.rootDir, 'public/index.html'),
       }),
       this.progressBarPlugin(),
     ]
@@ -175,7 +178,9 @@ export class WebpackBaseConfig {
   progressBarPlugin() {
     return new ProgressBarPlugin({
       format: [
-        chalk.black.bgGreen.bold(` ${this.modeShortened} `),
+        chalk.black.bgGreen.bold(
+          ` ${camelcase(this.options.mode, { pascalCase: true })} `
+        ),
         chalk.green(':bar'),
         ':msg',
         chalk.green.bold(':percent'),

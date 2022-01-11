@@ -3,13 +3,8 @@ import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import CopyPlugin from 'copy-webpack-plugin'
 import TerserPlugin from 'terser-webpack-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import { WebpackMode } from '../types'
 
 export class WebpackProdConfig extends WebpackBaseConfig {
-  get mode(): WebpackMode {
-    return 'production'
-  }
-
   optimization() {
     return {
       minimize: true,
