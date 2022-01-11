@@ -1,5 +1,5 @@
 {
-  "name": "@simply/core",
+  "name": "@simply/cli",
   "module": "dist/webpack.esm.js",
   "version": "0.1.0",
   "license": "MIT",
@@ -45,22 +45,7 @@
     }
   ],
   "bin": {
-    "simply-cli": "./bin/simply-cli.js"
-  },
-  "devDependencies": {
-    "@size-limit/preset-small-lib": "^7.0.5",
-    "@types/mini-css-extract-plugin": "^2.4.0",
-    "@types/minimist": "^1.2.2",
-    "@types/node": "^17.0.8",
-    "@types/pify": "^5.0.1",
-    "@types/postcss-preset-env": "^6.7.3",
-    "@types/progress-bar-webpack-plugin": "^2.1.0",
-    "@types/webpack-bundle-analyzer": "^4.4.1",
-    "husky": "^7.0.4",
-    "size-limit": "^7.0.5",
-    "tsdx": "^0.14.1",
-    "tslib": "^2.3.1",
-    "typescript": "^4.5.4"
+    "simply": "./bin/simply.js"
   },
   "dependencies": {
     "@babel/core": "^7.16.0",
@@ -84,7 +69,9 @@
     "css-loader": "^6.5.1",
     "css-minimizer-webpack-plugin": "^3.1.1",
     "exit": "^0.1.2",
+    "fs-extra": "^10.0.0",
     "html-webpack-plugin": "^5.5.0",
+    "ignore": "^5.2.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
     "mini-css-extract-plugin": "^2.4.4",
@@ -100,5 +87,20 @@
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.4.0",
     "webpack-merge": "^5.8.0"
+  },
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^7.0.5",
+    "@types/fs-extra": "^9.0.13",
+    "@types/mini-css-extract-plugin": "^2.4.0",
+    "@types/minimist": "^1.2.2",
+    "@types/node": "^17.0.8",
+    "@types/postcss-preset-env": "^6.7.3",
+    "@types/progress-bar-webpack-plugin": "^2.1.0",
+    "@types/webpack-bundle-analyzer": "^4.4.1",
+    "husky": "^7.0.4",
+    "size-limit": "^7.0.5",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.4"
   }
 }

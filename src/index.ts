@@ -1,2 +1,2 @@
-export * from './webpack'
+export * from './builder'
 export * from './cli'

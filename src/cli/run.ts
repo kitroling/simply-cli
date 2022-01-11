@@ -1,6 +1,5 @@
 import minimist from 'minimist'
-import { WebpackBuilder } from '../webpack'
-import { WebpackRunMode } from '../webpack/types'
+import { WebpackBuilder, WebpackRunMode } from '../builder'
 import Commands from './commands'
 
 export const run = async () => {
