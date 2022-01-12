@@ -1,5 +1,5 @@
 import { CMDDefinition } from '../types'
-import { CoreConfig, CustomConfigReader, mergeConfig } from '../../option'
+import { CoreConfig, ConfigReader, mergeConfig } from '../../option'
 import { App } from '../../core'
 import { WebpackBuilder } from '../../builder'
 
@@ -27,6 +27,10 @@ export const cmd: CMDDefinition = {
     debug: {
       type: 'number',
     },
+    config: {
+      alias: 'c',
+      type: 'string',
+    },
   },
   async run(args = {}) {
     const cmdConfig: CoreConfig = {
@@ -40,7 +44,7 @@ export const cmd: CMDDefinition = {
         static: args.static,
       },
     }
-    const customConfig = CustomConfigReader.readCustomConfig()
+    const customConfig = ConfigReader.readConfig(cmdConfig.rootDir)
     // todo env config
     const options = mergeConfig(cmdConfig, customConfig)
     const app = new App(options)

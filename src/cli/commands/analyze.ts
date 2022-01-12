@@ -11,6 +11,10 @@ export const cmd: CMDDefinition = {
     debug: {
       type: 'number',
     },
+    config: {
+      alias: 'c',
+      type: 'string',
+    },
   },
   async run(args) {
     return ProdCmd.run({ ...args, analyze: true })

@@ -2,15 +2,20 @@ import path from 'path'
 import { CoreConfig } from './index'
 import fs from 'fs-extra'
 
-export class CustomConfigReader {
+export class ConfigReader {
   static get CONFIG_FILENAME() {
     return 'simply.config.js'
   }
-  static readCustomConfig(file?: string) {
-    const configFile =
-      file || path.join(process.cwd(), CustomConfigReader.CONFIG_FILENAME)
-    if (fs.existsSync(configFile) && fs.statSync(configFile).isFile()) {
-      return require(configFile) as CoreConfig
+
+  static readConfig(rootDir?: string): CoreConfig {
+    rootDir = rootDir || process.cwd()
+    const configFile = path.join(rootDir, ConfigReader.CONFIG_FILENAME)
+    return this.readCustomConfig(configFile)
+  }
+
+  static readCustomConfig(file: string): CoreConfig {
+    if (fs.existsSync(file) && fs.statSync(file).isFile()) {
+      return require(file) as CoreConfig
     }
     return {}
   }
