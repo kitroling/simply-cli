@@ -1,6 +1,5 @@
-import { CoreConfig } from '../option'
-
 export interface CMDDefinition {
+  name?: string
   params: Record<
     string,
     {
@@ -10,5 +9,5 @@ export interface CMDDefinition {
       array?: boolean
     }
   >
-  prepare?(args: Record<string, any>): CoreConfig
+  run(options?: Record<string, any>): Promise<void>
 }

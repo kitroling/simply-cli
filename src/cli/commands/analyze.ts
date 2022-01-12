@@ -1,6 +1,8 @@
 import { CMDDefinition } from '../types'
+import { cmd as ProdCmd } from './prod'
 
 export const cmd: CMDDefinition = {
+  name: 'analyze',
   params: {
     root: {
       alias: 'r',
@@ -10,12 +12,7 @@ export const cmd: CMDDefinition = {
       type: 'number',
     },
   },
-  prepare(args) {
-    return {
-      rootDir: args.root,
-      mode: 'prod',
-      analyze: true,
-      debug: args.debug || false,
-    }
+  async run(args) {
+    return ProdCmd.run({ ...args, analyze: true })
   },
 }

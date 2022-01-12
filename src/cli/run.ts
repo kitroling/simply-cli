@@ -1,14 +1,13 @@
 import minimist from 'minimist'
 import Commands from './commands'
 import { CMDDefinition } from './types'
-import { App } from '../core'
 import { WebpackRunMode } from '../option'
 
 const getRunOptions = (argv: string[]) => {
   const {
-    _: [mode = 'dev'],
+    _: [cmd = 'dev'],
   } = minimist(argv, { stopEarly: true })
-  const defs = Commands[mode]
+  const defs = Commands[cmd]
   if (defs) {
     const opts = {
       string: [] as string[],
@@ -45,11 +44,11 @@ const getRunOptions = (argv: string[]) => {
     }
     return {
       command: defs,
-      mode,
+      cmd,
       ...options,
     } as {
       command: CMDDefinition
-      mode: WebpackRunMode
+      cmd: WebpackRunMode | string
       [key: string]: any
     }
   } else {
@@ -60,7 +59,12 @@ const getRunOptions = (argv: string[]) => {
 export const run = async () => {
   const argv = process.argv.slice(2)
   const { command, ...runOptions } = getRunOptions(argv)
-  const options = command.prepare?.(runOptions) || {}
-  const app = new App(options)
-  await app.start()
+  await runCommand(command, runOptions)
+}
+
+export const runCommand = async (
+  command: CMDDefinition,
+  params?: Record<string, any>
+) => {
+  return command.run(params)
 }

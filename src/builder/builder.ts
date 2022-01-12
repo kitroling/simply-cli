@@ -8,10 +8,15 @@ import chalk from 'chalk'
 import { AddressInfo } from 'net'
 import * as url from 'url'
 import { CoreOption, WebpackRunMode } from '../option'
+import { App } from '../core'
 
 // todo debug mode
 export class WebpackBuilder {
-  constructor(private readonly options: CoreOption) {}
+  constructor(private readonly app: App) {}
+
+  get options(): CoreOption {
+    return this.app.options
+  }
 
   private devServer!: DevServer
 
